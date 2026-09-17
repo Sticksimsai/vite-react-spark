@@ -43,3 +43,11 @@ export function NavLink({ to, className, ...rest }: NavLinkProps) {
 export function useParams(): Record<string, string | undefined> {
   return useRouterParams({ strict: false }) as Record<string, string | undefined>;
 }
+
+/** react-router-dom style `navigate('/some/path')`. */
+export function useNavigate(): (to: string) => void {
+  const navigate = useRouterNavigate();
+  return (to: string) => {
+    void (navigate as unknown as (opts: { to: string }) => Promise<void>)({ to });
+  };
+}
