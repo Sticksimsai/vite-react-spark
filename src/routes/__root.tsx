@@ -20,7 +20,10 @@ import fredoka600 from "@fontsource/fredoka/600.css?url";
 import fredoka700 from "@fontsource/fredoka/700.css?url";
 
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { PrivyProvider } from "@privy-io/react-auth";
+
 import { Shell } from "@/components/Shell";
+import { PRIVY_APP_ID, privyEnabled } from "@/lib/auth";
 import NotFound from "@/pages/NotFound";
 
 function NotFoundComponent() {
@@ -115,15 +118,32 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function Identity({ children }: { children: ReactNode }) {
+  if (!privyEnabled) return <>{children}</>;
+  return (
+    <PrivyProvider
+      appId={PRIVY_APP_ID}
+      config={{
+        loginMethods: ["email", "google", "twitter", "passkey"],
+        embeddedWallets: { createOnLogin: "users-without-wallets" },
+      }}
+    >
+      {children}
+    </PrivyProvider>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Shell>
-        {/* Required: nested routes render here. */}
-        <Outlet />
-      </Shell>
+      <Identity>
+        <Shell>
+          {/* Required: nested routes render here. */}
+          <Outlet />
+        </Shell>
+      </Identity>
     </QueryClientProvider>
   );
 }
