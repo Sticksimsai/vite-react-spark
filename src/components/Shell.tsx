@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink } from '@/lib/nav';
 import { ArrowUpRight, X, Menu, Wallet, LogOut, User as UserIcon, Coins } from 'lucide-react';
 import { Modal } from './Modal';
 import { BuyTicker } from './BuyTicker';
-import { useMember } from '@/lib/auth';
+import { onAuthNotice, useMember } from '@/lib/auth';
 import { shortAddr } from '@/lib/format';
 
 const nav = [['/discover', 'coins'], ['/launch', 'start a coin'], ['/wallet', 'my rewards'], ['/analytics', 'numbers'], ['/docs', 'how it works']] as const;
@@ -15,8 +15,11 @@ function initials(handle: string, address: string) {
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const [buyOpen, setBuyOpen] = useState(false), [menu, setMenu] = useState(false), [memberMenu, setMemberMenu] = useState(false);
+  const [authNotice, setAuthNotice] = useState('');
   const member = useMember();
   const label = member.handle || (member.embeddedAddress ? shortAddr(member.embeddedAddress) : 'member');
+
+  useEffect(() => onAuthNotice(setAuthNotice), []);
 
   return <>
     <a href="#main" className="skip">Skip to content</a>
@@ -44,6 +47,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </div>
       {menu && <nav className="mobile-nav" aria-label="Mobile navigation">{nav.map(([href, label]) => <Link to={href} key={href} onClick={() => setMenu(false)}>{label}</Link>)}<Link to="/status" onClick={() => setMenu(false)}>status</Link></nav>}
     </header>
+    {authNotice && <div className="notice" role="status">{authNotice}</div>}
     <div className="preview-banner"><span className="preview-label">phase 02 · local beta</span><span>Live local coins are in discovery. Example markets are labelled. Test ETH only; mainnet trading is disabled.</span><Link to="/status">build status <ArrowUpRight size={12}/></Link></div>
     <BuyTicker/>
     <main id="main">{children}</main>
