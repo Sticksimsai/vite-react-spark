@@ -7,7 +7,7 @@ import { Chart } from '@/components/Chart';
 import { Modal } from '@/components/Modal';
 import { useLive, type StateResponse } from '@/lib/api';
 import { useMember } from '@/lib/auth';
-import { getCult, type CultHolder } from '@/lib/cult';
+import { getCult, handleSlug, type CultHolder } from '@/lib/cult';
 import { eth, shortAddr } from '@/lib/format';
 import { coins, compact, money, type Coin } from '@/lib/demo';
 
@@ -59,7 +59,7 @@ function CultRow({ holder, displayHandle }: { holder: CultHolder & { isYou: bool
   return <div className="cult-row">
     <div className="cult-person">
       {holder.avatar ? <img className="cult-avatar" src={holder.avatar} alt="" width={46} height={46}/> : <span className="pulse-letter cult-avatar" aria-hidden="true">{holder.initials}</span>}
-      <div className="cult-identity"><strong>{displayHandle ?? holder.handle ?? shortAddr(holder.address)}</strong><span>holding {holder.holdingSince}</span></div>
+      <div className="cult-identity"><strong>{holder.handle ? <Link to={`/m/${handleSlug(holder.handle)}`}>{displayHandle ?? holder.handle}</Link> : (displayHandle ?? shortAddr(holder.address))}</strong><span>holding {holder.holdingSince}</span></div>
       <div className="cult-badges">{holder.isYou && <span className="tag">you</span>}{holder.badges.map(badge => <span className="tag" key={badge}>{badge}</span>)}</div>
     </div>
     <div className="cult-metric cult-holding"><span>holding</span><strong>{holder.holdingPercent}%</strong><div className="horizontal-track"><i style={{ width: `${Math.min(100, holder.holdingPercent * 8)}%` }}/></div></div>
