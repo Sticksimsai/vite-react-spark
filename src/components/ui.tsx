@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/nav';
 import { ArrowRight, MoveUpRight } from 'lucide-react';
 import type { Coin } from '@/lib/demo';
 

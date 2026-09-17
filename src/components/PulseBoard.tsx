@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/nav';
 import { Search, Users, Repeat2, Zap, Flame, Rocket, Crown, TrendingUp, TrendingDown, CheckCircle2 } from 'lucide-react';
 import { CoinArt } from './ui';
 import type { Coin } from '@/lib/demo';

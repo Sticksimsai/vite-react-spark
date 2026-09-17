@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/nav';
 import { Plus, Radio } from 'lucide-react';
 import { PulseBoard, type PulseRow } from '@/components/PulseBoard';
 import { useLive, type StateResponse } from '@/lib/api';

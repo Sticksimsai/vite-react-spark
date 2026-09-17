@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/nav';
 import { ArrowRight, ArrowUpRight, Sparkles } from 'lucide-react';
 import { SectionHeading, Stat } from '@/components/ui';
 import { useLive, type AnalyticsResponse } from '@/lib/api';
