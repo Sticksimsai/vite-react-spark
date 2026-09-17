@@ -20,6 +20,7 @@ import { Route as RoundsRouteImport } from './routes/rounds'
 import { Route as StatusRouteImport } from './routes/status'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as CoinIdRouteImport } from './routes/coin.$id'
+import { Route as MHandleRouteImport } from './routes/m.$handle'
 import { Route as WalletIndexRouteImport } from './routes/wallet.index'
 import { Route as WalletAddressRouteImport } from './routes/wallet.$address'
 
@@ -78,6 +79,11 @@ const CoinIdRoute = CoinIdRouteImport.update({
   path: '/coin/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MHandleRoute = MHandleRouteImport.update({
+  id: '/m/$handle',
+  path: '/m/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WalletIndexRoute = WalletIndexRouteImport.update({
   id: '/wallet/',
   path: '/wallet/',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/status': typeof StatusRoute
   '/terms': typeof TermsRoute
   '/coin/$id': typeof CoinIdRoute
+  '/m/$handle': typeof MHandleRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/wallet/': typeof WalletIndexRoute
 }
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/status': typeof StatusRoute
   '/terms': typeof TermsRoute
   '/coin/$id': typeof CoinIdRoute
+  '/m/$handle': typeof MHandleRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/wallet': typeof WalletIndexRoute
 }
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/status': typeof StatusRoute
   '/terms': typeof TermsRoute
   '/coin/$id': typeof CoinIdRoute
+  '/m/$handle': typeof MHandleRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/wallet/': typeof WalletIndexRoute
 }
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/terms'
     | '/coin/$id'
+    | '/m/$handle'
     | '/wallet/$address'
     | '/wallet/'
   fileRoutesByTo: FileRoutesByTo
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/terms'
     | '/coin/$id'
+    | '/m/$handle'
     | '/wallet/$address'
     | '/wallet'
   id:
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/terms'
     | '/coin/$id'
+    | '/m/$handle'
     | '/wallet/$address'
     | '/wallet/'
   fileRoutesById: FileRoutesById
@@ -195,6 +207,7 @@ export interface RootRouteChildren {
   StatusRoute: typeof StatusRoute
   TermsRoute: typeof TermsRoute
   CoinIdRoute: typeof CoinIdRoute
+  MHandleRoute: typeof MHandleRoute
   WalletAddressRoute: typeof WalletAddressRoute
   WalletIndexRoute: typeof WalletIndexRoute
 }
@@ -278,6 +291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoinIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/m/$handle': {
+      id: '/m/$handle'
+      path: '/m/$handle'
+      fullPath: '/m/$handle'
+      preLoaderRoute: typeof MHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/wallet/': {
       id: '/wallet/'
       path: '/wallet'
@@ -307,6 +327,7 @@ const rootRouteChildren: RootRouteChildren = {
   StatusRoute: StatusRoute,
   TermsRoute: TermsRoute,
   CoinIdRoute: CoinIdRoute,
+  MHandleRoute: MHandleRoute,
   WalletAddressRoute: WalletAddressRoute,
   WalletIndexRoute: WalletIndexRoute,
 }
