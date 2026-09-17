@@ -125,7 +125,7 @@ function Identity({ children }: { children: ReactNode }) {
       appId={PRIVY_APP_ID}
       config={{
         loginMethods: ["email", "google", "twitter", "passkey"],
-        embeddedWallets: { createOnLogin: "users-without-wallets" },
+        embeddedWallets: { ethereum: { createOnLogin: "users-without-wallets" } },
       }}
     >
       {children}
