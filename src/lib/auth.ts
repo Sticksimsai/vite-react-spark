@@ -28,7 +28,7 @@ export type Member = {
   getAccessToken: () => Promise<string | null>;
 };
 
-/** Shell subscribes here to show "auth not configured" when login is hit with no app id. */
+/** Shell subscribes here to show "sign-in not configured yet" when login is hit with no app id. */
 const noticeListeners = new Set<(message: string) => void>();
 export function onAuthNotice(listener: (message: string) => void): () => void {
   noticeListeners.add(listener);
@@ -44,9 +44,9 @@ const disabled: Member = {
   handle: "",
   avatarUrl: "",
   profile: null,
-  login: () => noticeListeners.forEach((l) => l("auth not configured")),
+  login: () => noticeListeners.forEach((l) => l("sign-in not configured yet")),
   logout: () => {},
-  linkWallet: () => noticeListeners.forEach((l) => l("auth not configured")),
+  linkWallet: () => noticeListeners.forEach((l) => l("sign-in not configured yet")),
   getAccessToken: async () => null,
 };
 
