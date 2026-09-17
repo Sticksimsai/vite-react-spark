@@ -15,8 +15,11 @@ function initials(handle: string, address: string) {
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const [buyOpen, setBuyOpen] = useState(false), [menu, setMenu] = useState(false), [memberMenu, setMemberMenu] = useState(false);
+  const [authNotice, setAuthNotice] = useState('');
   const member = useMember();
   const label = member.handle || (member.embeddedAddress ? shortAddr(member.embeddedAddress) : 'member');
+
+  useEffect(() => onAuthNotice(setAuthNotice), []);
 
   return <>
     <a href="#main" className="skip">Skip to content</a>
