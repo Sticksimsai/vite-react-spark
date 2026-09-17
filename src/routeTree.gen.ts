@@ -15,6 +15,7 @@ import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as LaunchRouteImport } from './routes/launch'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RoundsRouteImport } from './routes/rounds'
 import { Route as StatusRouteImport } from './routes/status'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -50,6 +51,11 @@ const LaunchRoute = LaunchRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RoundsRoute = RoundsRouteImport.update({
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/docs': typeof DocsRoute
   '/launch': typeof LaunchRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/rounds': typeof RoundsRoute
   '/status': typeof StatusRoute
   '/terms': typeof TermsRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/launch': typeof LaunchRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/rounds': typeof RoundsRoute
   '/status': typeof StatusRoute
   '/terms': typeof TermsRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/docs': typeof DocsRoute
   '/launch': typeof LaunchRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/rounds': typeof RoundsRoute
   '/status': typeof StatusRoute
   '/terms': typeof TermsRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/launch'
     | '/privacy'
+    | '/profile'
     | '/rounds'
     | '/status'
     | '/terms'
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/launch'
     | '/privacy'
+    | '/profile'
     | '/rounds'
     | '/status'
     | '/terms'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/launch'
     | '/privacy'
+    | '/profile'
     | '/rounds'
     | '/status'
     | '/terms'
@@ -178,6 +190,7 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   LaunchRoute: typeof LaunchRoute
   PrivacyRoute: typeof PrivacyRoute
+  ProfileRoute: typeof ProfileRoute
   RoundsRoute: typeof RoundsRoute
   StatusRoute: typeof StatusRoute
   TermsRoute: typeof TermsRoute
@@ -228,6 +241,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rounds': {
@@ -282,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   LaunchRoute: LaunchRoute,
   PrivacyRoute: PrivacyRoute,
+  ProfileRoute: ProfileRoute,
   RoundsRoute: RoundsRoute,
   StatusRoute: StatusRoute,
   TermsRoute: TermsRoute,

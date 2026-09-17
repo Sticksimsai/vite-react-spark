@@ -3,7 +3,7 @@ import { ImagePlus, Wallet, Check } from 'lucide-react';
 import { PageHeading } from '@/components/ui';
 import { useMember } from '@/lib/auth';
 import { getProfile, saveProfile, uploadAvatar } from '@/lib/profile.functions';
-import { shortAddress } from '@/lib/format';
+import { shortAddr } from '@/lib/format';
 
 /** Member profile: handle, bio, avatar, linked wallets, holdings visibility. */
 export default function Profile() {
@@ -29,7 +29,7 @@ export default function Profile() {
     }).catch(() => { /* profile not created yet */ });
   }, [id]);
 
-  const fallback = member.handle || shortAddress(member.addresses[0] ?? '') || 'member';
+  const fallback = member.handle || shortAddr(member.addresses[0] ?? '') || 'member';
   const initials = (handle || fallback).replace(/[^a-zA-Z0-9]/g, '').slice(0, 2).toUpperCase();
 
   async function withToken<T>(run: (token: string) => Promise<T>) {
@@ -89,7 +89,7 @@ export default function Profile() {
       <section className="form-section">
         <div className="form-section-title"><span className="step-number">02</span><h2>Linked wallets</h2><span className="muted">membership comes from these</span></div>
         <div className="choice-grid">
-          {member.addresses.map(a => <div key={a} className="choice choice-card"><Wallet size={15}/><div><strong>{shortAddress(a)}</strong><small>{a === member.embeddedAddress ? 'account wallet' : 'linked wallet'}</small></div></div>)}
+          {member.addresses.map(a => <div key={a} className="choice choice-card"><Wallet size={15}/><div><strong>{shortAddr(a)}</strong><small>{a === member.embeddedAddress ? 'account wallet' : 'linked wallet'}</small></div></div>)}
         </div>
         <button className="button" onClick={member.linkWallet}><Wallet size={15}/> link a wallet</button>
         <p className="form-description">What you hold is read from the chain for these addresses. Nothing here is self-declared.</p>
