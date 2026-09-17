@@ -5,7 +5,12 @@
  * same small surface (`Link`, `NavLink`, `useParams`) on top of TanStack Router so the
  * pages keep their original markup and class names.
  */
-import { Link as RouterLink, useParams as useRouterParams, useRouterState } from "@tanstack/react-router";
+import {
+  Link as RouterLink,
+  useParams as useRouterParams,
+  useRouterState,
+  useNavigate as useRouterNavigate,
+} from "@tanstack/react-router";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 type AnchorProps = Omit<ComponentPropsWithoutRef<"a">, "href" | "className">;
