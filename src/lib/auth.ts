@@ -19,6 +19,8 @@ export type Member = {
   embeddedAddress: string;
   handle: string;
   avatarUrl: string;
+  /** Saved profile row, when one exists. */
+  profile: null;
   login: () => void;
   logout: () => void;
   linkWallet: () => void;
@@ -26,17 +28,25 @@ export type Member = {
   getAccessToken: () => Promise<string | null>;
 };
 
+/** Shell subscribes here to show "auth not configured" when login is hit with no app id. */
+const noticeListeners = new Set<(message: string) => void>();
+export function onAuthNotice(listener: (message: string) => void): () => void {
+  noticeListeners.add(listener);
+  return () => noticeListeners.delete(listener);
+}
+
 const disabled: Member = {
   user: null,
-  ready: false,
+  ready: true,
   authenticated: false,
   addresses: [],
   embeddedAddress: "",
   handle: "",
   avatarUrl: "",
-  login: () => {},
+  profile: null,
+  login: () => noticeListeners.forEach((l) => l("auth not configured")),
   logout: () => {},
-  linkWallet: () => {},
+  linkWallet: () => noticeListeners.forEach((l) => l("auth not configured")),
   getAccessToken: async () => null,
 };
 
