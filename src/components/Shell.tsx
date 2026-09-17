@@ -47,6 +47,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </div>
       {menu && <nav className="mobile-nav" aria-label="Mobile navigation">{nav.map(([href, label]) => <Link to={href} key={href} onClick={() => setMenu(false)}>{label}</Link>)}<Link to="/status" onClick={() => setMenu(false)}>status</Link></nav>}
     </header>
+    {authNotice && <div className="notice" role="status">{authNotice}</div>}
     <div className="preview-banner"><span className="preview-label">phase 02 · local beta</span><span>Live local coins are in discovery. Example markets are labelled. Test ETH only; mainnet trading is disabled.</span><Link to="/status">build status <ArrowUpRight size={12}/></Link></div>
     <BuyTicker/>
     <main id="main">{children}</main>
