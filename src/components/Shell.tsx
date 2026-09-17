@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink } from '@/lib/nav';
 import { ArrowUpRight, X, Menu, Wallet, LogOut, User as UserIcon, Coins } from 'lucide-react';
 import { Modal } from './Modal';
 import { BuyTicker } from './BuyTicker';
-import { useMember } from '@/lib/auth';
+import { onAuthNotice, useMember } from '@/lib/auth';
 import { shortAddr } from '@/lib/format';
 
 const nav = [['/discover', 'coins'], ['/launch', 'start a coin'], ['/wallet', 'my rewards'], ['/analytics', 'numbers'], ['/docs', 'how it works']] as const;
