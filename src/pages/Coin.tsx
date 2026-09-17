@@ -6,11 +6,20 @@ import { CoinArt, Stat, SectionHeading, EmptyState } from '@/components/ui';
 import { Chart } from '@/components/Chart';
 import { Modal } from '@/components/Modal';
 import { useLive, type StateResponse } from '@/lib/api';
+import { useMember } from '@/lib/auth';
+import { getCult, type CultHolder } from '@/lib/cult';
 import { eth, shortAddr } from '@/lib/format';
 import { coins, compact, money, type Coin } from '@/lib/demo';
 
 function DemoCoin({ coin }: { coin: Coin }) {
-  const [side, setSide] = useState('buy'), [amount, setAmount] = useState('0.01'), [open, setOpen] = useState(false);
+  const [side, setSide] = useState('buy'), [amount, setAmount] = useState('0.01'), [open, setOpen] = useState(false), [cultView, setCultView] = useState<'members' | 'holders'>('members');
+  const { addresses, authenticated, handle } = useMember();
+  const cult = getCult(coin.id);
+  const ownAddresses = new Set(addresses.map(address => address.toLowerCase()));
+  const visibleCult = (cultView === 'members' ? cult.members : cult.holders)
+    .map(holder => ({ ...holder, isYou: ownAddresses.has(holder.address.toLowerCase()) }))
+    .sort((a, b) => Number(b.isYou) - Number(a.isYou));
+  const memberHoldsCoin = visibleCult.some(holder => holder.isYou);
   return <>
     <Link to="/discover" className="fine"><ArrowLeft size={12}/> back to the pulse</Link>
     <div className="coin-detail-top"><CoinArt coin={coin} small/><div><h1>{coin.name}<span>${coin.symbol}</span></h1><p className="coin-subtitle">robinhood chain <span>·</span> pays {coin.reward} <span>·</span> example coin</p></div><span className="tag">{coin.progress === 100 ? 'graduated' : 'on the curve'}</span></div>
@@ -18,6 +27,14 @@ function DemoCoin({ coin }: { coin: Coin }) {
     <div className="detail-layout">
       <div>
         <div className="panel"><Chart label={`${coin.symbol} / USD`} kind="price"/><div className="progress-section"><div><span>{coin.progress === 100 ? 'Graduated to pool' : 'Bonding curve progress'}</span><strong className="positive">{coin.progress}%</strong></div><div className="horizontal-track"><i style={{ width: coin.progress + '%' }}/></div><p className="fine" style={{ marginTop: 12 }}>Illustrative status. This coin has no deployed contract.</p></div></div>
+        <div className="cult-heading">
+          <div><h2>the ${coin.symbol} cult</h2><span>{cult.members.length} members · {cult.memberSupplyPercent}% of supply held by members</span></div>
+          <div className="cult-heading-tools"><span className="tag">example data</span><div className="segmented" aria-label="Cult holder view">{(['members', 'holders'] as const).map(view => <button key={view} className={cultView === view ? 'selected' : ''} aria-pressed={cultView === view} onClick={() => setCultView(view)}>{view === 'holders' ? 'all holders' : 'members'}</button>)}</div></div>
+        </div>
+        <div className="panel cult-list">
+          {visibleCult.map(holder => <CultRow key={holder.address} holder={holder} displayHandle={holder.isYou && handle ? handle : undefined}/>) }
+          {authenticated && !memberHoldsCoin && <div className="cult-join"><span className="fine">You don’t hold ${coin.symbol} yet.</span><button className="button primary" onClick={() => setOpen(true)}>join the cult</button></div>}
+        </div>
         <SectionHeading title="A community that gives back."/>
         <div className="panel panel-body"><p className="lead-note">{coin.name} is an example of a launch that rewards its community in {coin.reward}. When live, every funded round will link its fee receipts, allocations and payments.</p><Link to="/rounds" className="button">explore the ledger <ArrowRight size={14}/></Link></div>
       </div>
@@ -35,6 +52,20 @@ function DemoCoin({ coin }: { coin: Coin }) {
     </div>
     <Modal open={open} onOpenChange={setOpen} title="Trading on the local beta" description="This page is an interface preview. Example tokens cannot be bought or sold."><div className="notice">Live coins trade through the beta backend with a reviewed wallet transaction. Your entered amount has not been sent anywhere.</div><Link to="/status" className="button primary full" onClick={() => setOpen(false)}>see build progress <ArrowRight size={15}/></Link></Modal>
   </>;
+}
+
+function CultRow({ holder, displayHandle }: { holder: CultHolder & { isYou: boolean }; displayHandle?: string }) {
+  const pnl = holder.pnlPercent;
+  return <div className="cult-row">
+    <div className="cult-person">
+      {holder.avatar ? <img className="cult-avatar" src={holder.avatar} alt="" width={46} height={46}/> : <span className="pulse-letter cult-avatar" aria-hidden="true">{holder.initials}</span>}
+      <div className="cult-identity"><strong>{displayHandle ?? holder.handle ?? shortAddr(holder.address)}</strong><span>holding {holder.holdingSince}</span></div>
+      <div className="cult-badges">{holder.isYou && <span className="tag">you</span>}{holder.badges.map(badge => <span className="tag" key={badge}>{badge}</span>)}</div>
+    </div>
+    <div className="cult-metric cult-holding"><span>holding</span><strong>{holder.holdingPercent}%</strong><div className="horizontal-track"><i style={{ width: `${Math.min(100, holder.holdingPercent * 8)}%` }}/></div></div>
+    <div className="cult-metric"><span>rewarded</span><strong>{holder.rewardedEth.toFixed(4)} ETH</strong></div>
+    <div className="cult-metric"><span>PnL</span><strong className={pnl === null ? '' : pnl >= 0 ? 'positive' : 'negative'}>{pnl === null ? '—' : `${pnl >= 0 ? '+' : ''}${pnl}%`}</strong></div>
+  </div>;
 }
 
 function LiveCoin({ token }: { token: string }) {
