@@ -77,6 +77,7 @@ export function useMember(): Member {
     embeddedAddress: embedded,
     handle: displayHandle(user ?? null),
     avatarUrl: user?.twitter?.profilePictureUrl ?? "",
+    profile: null,
     login: () => login(),
     logout: () => void logout(),
     linkWallet: () => linkWallet(),
