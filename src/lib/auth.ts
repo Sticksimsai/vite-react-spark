@@ -65,7 +65,7 @@ function displayHandle(user: User | null): string {
 export function useMember(): Member {
   if (!privyEnabled) return disabled;
   // eslint-disable-next-line react-hooks/rules-of-hooks -- privyEnabled is constant for the app's lifetime
-  const { ready, authenticated, user, login, logout } = usePrivy();
+  const { ready, authenticated, user, login, logout, getAccessToken } = usePrivy();
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { linkWallet } = useLinkAccount();
   const { addresses, embedded } = accounts(user ?? null);
@@ -80,5 +80,6 @@ export function useMember(): Member {
     login: () => login(),
     logout: () => void logout(),
     linkWallet: () => linkWallet(),
+    getAccessToken: () => getAccessToken(),
   };
 }
