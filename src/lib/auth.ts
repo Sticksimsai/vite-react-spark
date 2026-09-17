@@ -22,6 +22,8 @@ export type Member = {
   login: () => void;
   logout: () => void;
   linkWallet: () => void;
+  /** Privy access token, verified server-side before any profile write. */
+  getAccessToken: () => Promise<string | null>;
 };
 
 const disabled: Member = {
@@ -35,6 +37,7 @@ const disabled: Member = {
   login: () => {},
   logout: () => {},
   linkWallet: () => {},
+  getAccessToken: async () => null,
 };
 
 function accounts(user: User | null): { addresses: string[]; embedded: string } {
