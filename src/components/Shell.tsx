@@ -1,36 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, NavLink } from '@/lib/nav';
-import { ArrowUpRight, X, Menu, Wallet } from 'lucide-react';
+import { ArrowUpRight, X, Menu, Wallet, LogOut, User as UserIcon, Coins } from 'lucide-react';
 import { Modal } from './Modal';
 import { BuyTicker } from './BuyTicker';
-
-type Provider = { request: (args: { method: string; params?: unknown[] }) => Promise<unknown>; on?: (event: string, fn: (value: unknown) => void) => void; removeListener?: (event: string, fn: (value: unknown) => void) => void };
-declare global { interface Window { ethereum?: Provider } }
+import { useMember } from '@/lib/auth';
+import { shortAddr } from '@/lib/format';
 
 const nav = [['/discover', 'coins'], ['/launch', 'start a coin'], ['/wallet', 'my rewards'], ['/analytics', 'numbers'], ['/docs', 'how it works']] as const;
 
+function initials(handle: string, address: string) {
+  const source = handle || address.replace(/^0x/, '');
+  return source.slice(0, 2).toUpperCase();
+}
+
 export function Shell({ children }: { children: React.ReactNode }) {
-  const [walletOpen, setWalletOpen] = useState(false), [buyOpen, setBuyOpen] = useState(false), [menu, setMenu] = useState(false);
-  const [account, setAccount] = useState(''), [chain, setChain] = useState(''), [error, setError] = useState(''), [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    const p = window.ethereum; if (!p) return;
-    const accounts = (v: unknown) => setAccount(Array.isArray(v) ? String(v[0] ?? '') : '');
-    const chains = (v: unknown) => setChain(String(v));
-    p.on?.('accountsChanged', accounts); p.on?.('chainChanged', chains);
-    return () => { p.removeListener?.('accountsChanged', accounts); p.removeListener?.('chainChanged', chains); };
-  }, []);
-
-  async function connect() {
-    setError(''); setBusy(true);
-    try {
-      if (!window.ethereum) throw new Error('No EVM wallet detected. Open this page in a wallet browser or install an EVM wallet extension.');
-      const result = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      setAccount((result as string[])[0] ?? '');
-      setChain(String(await window.ethereum.request({ method: 'eth_chainId' })));
-    } catch (e) { setError(e instanceof Error ? e.message : 'Wallet connection was declined.'); }
-    finally { setBusy(false); }
-  }
+  const [buyOpen, setBuyOpen] = useState(false), [menu, setMenu] = useState(false), [memberMenu, setMemberMenu] = useState(false);
+  const member = useMember();
+  const label = member.handle || (member.embeddedAddress ? shortAddr(member.embeddedAddress) : 'member');
 
   return <>
     <a href="#main" className="skip">Skip to content</a>
@@ -43,7 +29,16 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <div className="header-actions">
           <Link to="/status" className="chain-pill"><i className="live-dot"/> robinhood chain · local beta</Link>
           <Link className="button primary start-button" to="/launch">start a coin <ArrowUpRight size={14}/></Link>
-          <button className="button wallet-button" onClick={() => setWalletOpen(true)} aria-label={account ? 'Wallet ' + account : 'Connect wallet'}><Wallet size={15}/><span>{account ? account.slice(0, 6) + '…' + account.slice(-4) : 'wallet'}</span></button>
+          {member.authenticated
+            ? <button
+                className="icon-button"
+                onClick={() => setMemberMenu(true)}
+                aria-label={'Account menu for ' + label}
+                style={{ width: 34, height: 34, padding: 0, borderRadius: '50%', overflow: 'hidden', background: member.avatarUrl ? 'transparent' : 'var(--accent)', color: 'var(--on-accent)', font: '600 11px var(--mono)' }}
+              >
+                {member.avatarUrl ? <img src={member.avatarUrl} alt="" width={34} height={34} style={{ width: 34, height: 34, objectFit: 'cover' }}/> : initials(member.handle, member.embeddedAddress)}
+              </button>
+            : <button className="button primary wallet-button" onClick={member.login} disabled={member.ready === false && member.user === null && !member.login}>sign in</button>}
           <button className="icon-button mobile-toggle" aria-label="Toggle navigation" aria-expanded={menu} onClick={() => setMenu(!menu)}>{menu ? <X/> : <Menu/>}</button>
         </div>
       </div>
@@ -68,16 +63,13 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <div className="footer-bottom"><img className="footer-mark" src="/brand/mark.png" alt="" width={420} height={440}/><span>© {new Date().getFullYear()} CULT FUN · a working name · unaudited local beta</span><span className="footer-network"><i className="live-dot"/> robinhood chain</span></div>
     </footer>
 
-    <Modal open={walletOpen} onOpenChange={setWalletOpen} title={account ? 'Your wallet' : 'Connect your wallet'} description="Connect an EVM wallet to view your address. This connection only reads your address; transactions are only requested after you review them.">
-      {account ? <>
-        <div className="wallet-address"><Wallet size={24}/><code>{account}</code></div>
-        <p className="muted">{chain === '0x1237' ? 'Robinhood Chain connected.' : 'Your wallet is on another network. Transactions are disabled in this phase.'}</p>
-        <button className="button full" onClick={() => { setAccount(''); setWalletOpen(false); }}>Disconnect from preview</button>
-      </> : <>
-        <button className="button primary full" disabled={busy} onClick={connect}><Wallet size={16}/>{busy ? 'Waiting for your wallet…' : 'Connect browser wallet'}</button>
-        <p className="fine">Robinhood Wallet, MetaMask, or another injected EVM wallet.</p>
-      </>}
-      {error && <p role="alert" className="error">{error}</p>}
+    <Modal open={memberMenu} onOpenChange={setMemberMenu} title={label} description="Your membership across every cult you hold.">
+      <div className="member-menu" style={{ display: 'grid', gap: 8 }}>
+        <Link className="button full" to="/wallet" onClick={() => setMemberMenu(false)}><Coins size={15}/> my rewards</Link>
+        <Link className="button full" to="/wallet" onClick={() => setMemberMenu(false)}><UserIcon size={15}/> profile</Link>
+        <button className="button full" onClick={() => { member.linkWallet(); setMemberMenu(false); }}><Wallet size={15}/> link a wallet</button>
+        <button className="button full" onClick={() => { member.logout(); setMemberMenu(false); }}><LogOut size={15}/> sign out</button>
+      </div>
     </Modal>
     <Modal open={buyOpen} onOpenChange={setBuyOpen} title="The $CULT token" description="CULT is the working name for the platform token. It has not been deployed.">
       <div className="notice">Purchases will open after the token policy and contracts are reviewed. The token shown in this preview is an example.</div>
