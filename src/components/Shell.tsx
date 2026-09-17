@@ -66,7 +66,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     <Modal open={memberMenu} onOpenChange={setMemberMenu} title={label} description="Your membership across every cult you hold.">
       <div className="member-menu" style={{ display: 'grid', gap: 8 }}>
         <Link className="button full" to="/wallet" onClick={() => setMemberMenu(false)}><Coins size={15}/> my rewards</Link>
-        <Link className="button full" to="/wallet" onClick={() => setMemberMenu(false)}><UserIcon size={15}/> profile</Link>
+        <Link className="button full" to="/profile" onClick={() => setMemberMenu(false)}><UserIcon size={15}/> profile</Link>
         <button className="button full" onClick={() => { member.linkWallet(); setMemberMenu(false); }}><Wallet size={15}/> link a wallet</button>
         <button className="button full" onClick={() => { member.logout(); setMemberMenu(false); }}><LogOut size={15}/> sign out</button>
       </div>

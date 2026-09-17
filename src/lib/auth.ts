@@ -22,6 +22,8 @@ export type Member = {
   login: () => void;
   logout: () => void;
   linkWallet: () => void;
+  /** Privy access token, verified server-side before any profile write. */
+  getAccessToken: () => Promise<string | null>;
 };
 
 const disabled: Member = {
@@ -35,6 +37,7 @@ const disabled: Member = {
   login: () => {},
   logout: () => {},
   linkWallet: () => {},
+  getAccessToken: async () => null,
 };
 
 function accounts(user: User | null): { addresses: string[]; embedded: string } {
@@ -62,7 +65,7 @@ function displayHandle(user: User | null): string {
 export function useMember(): Member {
   if (!privyEnabled) return disabled;
   // eslint-disable-next-line react-hooks/rules-of-hooks -- privyEnabled is constant for the app's lifetime
-  const { ready, authenticated, user, login, logout } = usePrivy();
+  const { ready, authenticated, user, login, logout, getAccessToken } = usePrivy();
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { linkWallet } = useLinkAccount();
   const { addresses, embedded } = accounts(user ?? null);
@@ -77,5 +80,6 @@ export function useMember(): Member {
     login: () => login(),
     logout: () => void logout(),
     linkWallet: () => linkWallet(),
+    getAccessToken: () => getAccessToken(),
   };
 }
