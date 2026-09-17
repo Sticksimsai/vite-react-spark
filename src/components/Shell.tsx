@@ -38,7 +38,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
               >
                 {member.avatarUrl ? <img src={member.avatarUrl} alt="" width={34} height={34} style={{ width: 34, height: 34, objectFit: 'cover' }}/> : initials(member.handle, member.embeddedAddress)}
               </button>
-            : <button className="button primary wallet-button" onClick={member.login} disabled={member.ready === false && member.user === null && !member.login}>sign in</button>}
+            : <button className="button primary wallet-button" onClick={member.login}>sign in</button>}
           <button className="icon-button mobile-toggle" aria-label="Toggle navigation" aria-expanded={menu} onClick={() => setMenu(!menu)}>{menu ? <X/> : <Menu/>}</button>
         </div>
       </div>
