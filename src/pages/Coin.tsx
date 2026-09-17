@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from '@/lib/nav';
 import { isAddress } from 'viem';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { CoinArt, Stat, SectionHeading, EmptyState } from '@/components/ui';

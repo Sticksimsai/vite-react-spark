@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/nav';
 import { PageHeading, SectionHeading, Stat, EmptyState } from '@/components/ui';
 import { useLive, type AnalyticsResponse } from '@/lib/api';
 import { eth } from '@/lib/format';

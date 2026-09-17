@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from '@/lib/nav';
 import { isAddress } from 'viem';
 import { PageHeading, Stat, EmptyState } from '@/components/ui';
 import { useLive, type StateResponse } from '@/lib/api';

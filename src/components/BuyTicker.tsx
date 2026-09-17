@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/nav';
 import { useLive, type BuysResponse, type Buy } from '@/lib/api';
 import { coins as demoCoins } from '@/lib/demo';
 import { eth, shortAddr } from '@/lib/format';

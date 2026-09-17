@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink } from '@/lib/nav';
 import { ArrowUpRight, X, Menu, Wallet } from 'lucide-react';
 import { Modal } from './Modal';
 import { BuyTicker } from './BuyTicker';
